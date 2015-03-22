@@ -6,9 +6,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
- * Our sample handler extends AbstractHandler, an IHandler base class.
- * @see org.eclipse.core.commands.IHandler
- * @see org.eclipse.core.commands.AbstractHandler
+ * Schedules a single job
  */
 public class SingleJobHandler extends AbstractHandler {
 	/**

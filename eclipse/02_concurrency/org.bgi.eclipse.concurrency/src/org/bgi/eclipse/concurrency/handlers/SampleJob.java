@@ -5,6 +5,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+/**
+ * 
+ * A simple job composed of X iterations. Each iteration just sleeps 1 second.
+ * 
+ * @author guillon
+ *
+ */
 public class SampleJob extends Job {
 
 	private int nbIterations;

@@ -6,9 +6,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
- * Our sample handler extends AbstractHandler, an IHandler base class.
- * @see org.eclipse.core.commands.IHandler
- * @see org.eclipse.core.commands.AbstractHandler
+ * Schedules 3 long jobs that cannot run in parallel.
  */
 public class ExclusiveJobsHandler extends AbstractHandler {
 	/**
