@@ -1,4 +1,6 @@
-## Concurrency
+# Concurrency
+
+## Jobs
 
 Unit of work are represented by jobs. Jobs can run asynchronously. 
 When a job is scheduled, it is added to a job queue managed by the platform.
@@ -34,6 +36,8 @@ job.sleep();
 job.wakeUp();
 ```
 
+## Jobs states
+
 Job states:
 * WAITING : is scheduled and waiting to be executed
 * RUNNING : its run method is being executed
@@ -46,6 +50,7 @@ job.addJobChangeListener(IJobChangeListener)
 
 Listeners are provided with a IJobChangeEvent object.
 
+## JobManager
 
 To access running jobs and manage them
 
@@ -53,7 +58,7 @@ To access running jobs and manage them
 IJobManager jobMan = Platform.getJobManager();
 ```
 
-### Report progress with IReportMonitor
+## IProgressMonitor
 
 ```
 public IStatus run(IProgressMonitor monitor) {
@@ -68,4 +73,9 @@ public IStatus run(IProgressMonitor monitor) {
 	return Status.OK_STATUS;
 }
 ```
+
+If a job must not be displayed, `job.setSystem(true)`. Must be made before the job is scheduled.
+
+If a job is initiated by a user action, `job.setUser(true)`. Then a modal dialog is displayed.
+
 
