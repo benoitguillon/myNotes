@@ -1,0 +1,57 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<c:camelContext id="mainCamelContext">
+		<c:route id="file1">
+			<c:from uri="file://C:\\bgi\\tmp\\input1"/>
+			<c:process ref="assignJobId"/>
+			<c:split streaming="true">
+				<c:tokenize token="\r\n|\n"/>
+				<c:unmarshal>
+					<c:csv formatRef="camelCsvFormat"/>
+				</c:unmarshal>
+				<c:convertBodyTo type="java.lang.String" charset="UTF-8"/>
+				<c:to uri="stream:out"/>
+			</c:split>
+		</c:route>	
+	</c:camelContext>
+	
+	<bean id="assignJobId" class="org.bgi.file2db.processing.AssignJobIdProcessor">
+		<property name="service" ref="externalDataLoadingService"/>
+	</bean>
+	
+	<bean id="externalDataLoadingService" class="org.bgi.file2db.processing.ExternalDataLoadingServiceImpl">
+	
+	</bean>
+	
+	<bean id="camelCsvFormat" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject" ref="fileFormat"/>
+		<property name="targetMethod" value="toCSVFormat"/>
+	</bean>
+	
+	<bean id="fileFormat" class="org.bgi.file2db.format.CSVFileFormat">
+		<property name="delimiter" value=";"/>
+		<property name="columns">
+			<list>
+				<bean class="org.bgi.file2db.format.StringColumnFormat">
+					<property name="name" value="COL1"/>
+				</bean>
+				<bean class="org.bgi.file2db.format.StringColumnFormat">
+					<property name="name" value="COL2"/>
+				</bean>
+				<bean class="org.bgi.file2db.format.StringColumnFormat">
+					<property name="name" value="COL3"/>
+				</bean>
+				<bean class="org.bgi.file2db.format.StringColumnFormat">
+					<property name="name" value="COL4"/>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+
+</beans>
