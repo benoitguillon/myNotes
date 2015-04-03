@@ -31,9 +31,11 @@ public abstract class ColumnFormat<T> {
 	public abstract String fromObject(T input);
 	
 	/**
-	 * @return the Oracle database type
+	 * @return the jdbc data type.
+	 * 
+	 * One of java.sql.Types
 	 */
-	public abstract String toOracleDbType();
+	public abstract int getJdbcDataType();
 	
 	public String getName() {
 		return name;

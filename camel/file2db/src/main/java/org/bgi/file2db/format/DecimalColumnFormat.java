@@ -1,6 +1,7 @@
 package org.bgi.file2db.format;
 
 import java.math.BigDecimal;
+import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
@@ -26,11 +27,6 @@ public class DecimalColumnFormat extends ColumnFormat<BigDecimal> implements Ini
 		return decimalFormat.format(input);
 	}
 
-	@Override
-	public String toOracleDbType() {
-		return "NUMBER";
-	}
-
 	public void afterPropertiesSet() throws Exception {
 		if(this.decimalPattern == null){
 			this.decimalPattern = "";
@@ -45,6 +41,11 @@ public class DecimalColumnFormat extends ColumnFormat<BigDecimal> implements Ini
 
 	public void setDecimalPattern(String decimalPattern) {
 		this.decimalPattern = decimalPattern;
+	}
+
+	@Override
+	public int getJdbcDataType() {
+		return Types.DECIMAL;
 	}
 
 }

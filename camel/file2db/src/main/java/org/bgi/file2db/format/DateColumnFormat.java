@@ -1,5 +1,6 @@
 package org.bgi.file2db.format;
 
+import java.sql.Types;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,11 +31,6 @@ public class DateColumnFormat extends ColumnFormat<Date> implements Initializing
 		return this.dateFormat.format(input);
 	}
 
-	@Override
-	public String toOracleDbType() {
-		return "DATE";
-	}
-
 	public void afterPropertiesSet() throws Exception {
 		if(this.datePattern == null){
 			this.datePattern = "yyyy-MM-dd";
@@ -57,6 +53,11 @@ public class DateColumnFormat extends ColumnFormat<Date> implements Initializing
 
 	public void setLenient(boolean lenient) {
 		this.lenient = lenient;
+	}
+
+	@Override
+	public int getJdbcDataType() {
+		return Types.DATE;
 	}
 
 }

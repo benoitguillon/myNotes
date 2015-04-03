@@ -1,7 +1,8 @@
-package org.bgi.file2db.processing;
+package org.bgi.file2db.camel;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.bgi.file2db.processing.ExternalDataLoadingService;
 
 public class AssignJobIdProcessor implements Processor {
 
@@ -11,7 +12,7 @@ public class AssignJobIdProcessor implements Processor {
 	
 	public void process(Exchange exchange) throws Exception {
 		long id = this.getService().assignNextJobId();
-		exchange.setProperty(JOB_ID_HEADER_NAME, id);
+		exchange.getIn().setHeader(JOB_ID_HEADER_NAME, id);
 	}
 
 	public ExternalDataLoadingService getService() {

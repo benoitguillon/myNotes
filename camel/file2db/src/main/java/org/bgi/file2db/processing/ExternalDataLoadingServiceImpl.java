@@ -10,5 +10,4 @@ public class ExternalDataLoadingServiceImpl implements
 	public long assignNextJobId() {
 		return randomGenerator.nextLong();
 	}
-
 }

@@ -1,5 +1,7 @@
 package org.bgi.file2db.format;
 
+import org.apache.camel.dataformat.csv.CsvDataFormat;
+import org.apache.camel.spi.DataFormat;
 import org.apache.commons.csv.CSVFormat;
 
 public class CSVFileFormat extends FileFormat {
@@ -14,10 +16,9 @@ public class CSVFileFormat extends FileFormat {
 		this.delimiter = delimiter;
 	}
 	
-	public CSVFormat toCSVFormat(){
-		return CSVFormat.DEFAULT
-				.withDelimiter(this.delimiter)
-				.withHeader(this.getColumnsArray());
+	@Override
+	public DataFormat toCamelDataFormat() {
+		return new CsvDataFormat(toCSVFormat());
 	}
 	
 	protected String[] getColumnsArray(){
@@ -26,6 +27,12 @@ public class CSVFileFormat extends FileFormat {
 			result[i] = this.getColumns().get(i).getName();
 		}
 		return result;
+	}
+	
+	protected CSVFormat toCSVFormat(){
+		return CSVFormat.DEFAULT
+				.withDelimiter(this.delimiter)
+				.withHeader(this.getColumnsArray());
 	}
 
 }

@@ -1,0 +1,36 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<!-- Framework configuration -->
+	
+	<!-- The abstract bean that will be the parent of all file formats -->
+	<bean id="parentFile" class="org.bgi.file2db.format.FileFormat" abstract="true">
+		<property name="fileFormatRegistry" ref="fileFormatRegistry"/>
+	</bean>
+	
+	<!-- Defines an empty Camel Context. It will be filled by the fileFormatRegistry bean -->
+
+	<c:camelContext id="mainCamelContext" trace="false">
+	</c:camelContext>
+	
+	<!-- The registry, file formats will register in it -->
+	<bean id="fileFormatRegistry" class="org.bgi.file2db.FileFormatRegistry">
+		<property name="routeBuilderFactory" ref="routeBuilderFactory"/>
+		<property name="databaseSchemaLoaderFactory" ref="databaseSchemaLoaderFactory"/>
+	</bean>
+	
+	<bean id="databaseSchemaLoaderFactory" class="org.bgi.file2db.database.OracleDatabaseSchemaLoaderFactory"/>
+	
+	<!-- Returns Camel a route builder for a file format -->
+	<bean id="routeBuilderFactory" class="org.bgi.file2db.camel.DefaultFileFormatRouteBuilderFactory">
+		<property name="dataLoadingService" ref="externalDataLoadingService"/>
+	</bean>
+
+	<!-- service to manipulate the EMS database it self -->
+	<bean id="externalDataLoadingService" class="org.bgi.file2db.processing.ExternalDataLoadingServiceImpl"/>
+          
+</beans>

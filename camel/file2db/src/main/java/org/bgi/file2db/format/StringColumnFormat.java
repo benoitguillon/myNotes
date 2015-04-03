@@ -1,5 +1,7 @@
 package org.bgi.file2db.format;
 
+import java.sql.Types;
+
 public class StringColumnFormat extends ColumnFormat<String> {
 
 	@Override
@@ -13,8 +15,8 @@ public class StringColumnFormat extends ColumnFormat<String> {
 	}
 
 	@Override
-	public String toOracleDbType() {
-		return "VARCHAR2(255)";
+	public int getJdbcDataType() {
+		return Types.VARCHAR;
 	}
 
 }
