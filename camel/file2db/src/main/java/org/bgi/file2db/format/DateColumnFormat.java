@@ -1,5 +1,7 @@
 package org.bgi.file2db.format;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -58,6 +60,11 @@ public class DateColumnFormat extends ColumnFormat<Date> implements Initializing
 	@Override
 	public int getJdbcDataType() {
 		return Types.DATE;
+	}
+
+	@Override
+	public Date extractFromResultSet(ResultSet resultSet, int position) throws SQLException {
+		return resultSet.getDate(position);
 	}
 
 }

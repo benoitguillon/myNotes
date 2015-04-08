@@ -1,0 +1,26 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<!-- Test database location configuration -->
+	
+	<!-- In-memory Apache Derby database -->
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+  		<property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+  		<property name="url" value="jdbc:derby:memory:orders;create=true"/>
+  		<property name="username" value=""/>
+  		<property name="password" value=""/>
+	</bean> -->
+	
+	<!-- Oracle database -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+  		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+  		<property name="url" value="jdbc:oracle:thin:@vm-ems-dev:1521:EMS112VM"/>
+  		<property name="username" value="EMS1107"/>
+  		<property name="password" value="sungard"/>
+	</bean>
+
+</beans>

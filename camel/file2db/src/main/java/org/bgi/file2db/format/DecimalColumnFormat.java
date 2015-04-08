@@ -1,6 +1,8 @@
 package org.bgi.file2db.format;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -46,6 +48,12 @@ public class DecimalColumnFormat extends ColumnFormat<BigDecimal> implements Ini
 	@Override
 	public int getJdbcDataType() {
 		return Types.DECIMAL;
+	}
+
+	@Override
+	public BigDecimal extractFromResultSet(ResultSet resultSet, int position)
+			throws SQLException {
+		return resultSet.getBigDecimal(position);
 	}
 
 }

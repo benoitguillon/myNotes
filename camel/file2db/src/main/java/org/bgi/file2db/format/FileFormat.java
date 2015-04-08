@@ -1,14 +1,20 @@
 package org.bgi.file2db.format;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.camel.spi.DataFormat;
 import org.bgi.file2db.FileFormatRegistry;
+import org.bgi.file2db.camel.CamelHelper;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
 public abstract class FileFormat implements InitializingBean {
+	
+	public static final String JOB_ID_COLUMN_NAME = "JOB_ID";
+	
+	public static final String JOB_START_DATE_COLUMN_NAME = "JOB_START_DATE";
 	
 	private String lineSeparator = "\n|\r\n";
 	
@@ -23,7 +29,7 @@ public abstract class FileFormat implements InitializingBean {
 	private FileFormatRegistry fileFormatRegistry;
 	
 	private String targetTableName;
-
+	
 	public abstract DataFormat toCamelDataFormat();
 	
 	public void afterPropertiesSet() throws Exception {
@@ -33,7 +39,30 @@ public abstract class FileFormat implements InitializingBean {
 		if(this.targetTableName == null){
 			this.targetTableName = this.name;
 		}
+		List<ColumnFormat<?>> builtins = createBuiltInColumns();
+		List<ColumnFormat<?>> finalColumns = new ArrayList<ColumnFormat<?>>(builtins.size() + this.columns.size());
+		finalColumns.addAll(builtins);
+		finalColumns.addAll(this.columns);
+		this.columns = finalColumns;
+		
 		this.getFileFormatRegistry().addFile(this);
+	}
+	
+	private List<ColumnFormat<?>> createBuiltInColumns(){
+		List<ColumnFormat<?>> builtInColumns = new ArrayList<ColumnFormat<?>>();
+		LongColumnFormat jobIdColumn = new LongColumnFormat();
+		jobIdColumn.setName(JOB_ID_COLUMN_NAME);
+		jobIdColumn.setLength(10);
+		jobIdColumn.setMessageHeaderName(CamelHelper.JOB_ID_HEADER_NAME);
+		
+		builtInColumns.add(jobIdColumn);
+		
+		TimestampColumnFormat jobStartDate = new TimestampColumnFormat();
+		jobStartDate.setName(JOB_START_DATE_COLUMN_NAME);
+		jobStartDate.setMessageHeaderName(CamelHelper.JOB_START_DATE_HEADER_NAME);
+		builtInColumns.add(jobStartDate);
+		
+		return builtInColumns;
 	}
 	
 	public List<ColumnFormat<?>> getColumns() {
@@ -91,5 +120,4 @@ public abstract class FileFormat implements InitializingBean {
 	public void setTargetTableName(String targetTableName) {
 		this.targetTableName = targetTableName;
 	}
-
 }

@@ -1,5 +1,6 @@
 package org.bgi.file2db.camel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -11,6 +12,7 @@ public class MessageNormalizer implements Processor {
 
 	private FileFormat fileFormat;
 	
+	@SuppressWarnings("unchecked")
 	public void process(Exchange exchange) throws Exception {
 		List<?> msgContent = exchange.getIn().getBody(List.class);
 		if(msgContent == null){
@@ -19,32 +21,54 @@ public class MessageNormalizer implements Processor {
 		if(msgContent.size() == 0){
 			return;
 		}
+		List<List<Object>> output;
+		// guess list content based on first item
 		Object firstItem = msgContent.get(0);
-		if(firstItem instanceof String){
-			List<Object> row = (List<Object>)msgContent;
-			processRow(row);
-		}
-		else if(firstItem instanceof List<?>){
+		// if it's List<List<Object>> : there are several rows 
+		if(firstItem instanceof List<?>){
 			List<List<Object>> rows = (List<List<Object>>)msgContent;
+			output = new ArrayList<List<Object>>(rows.size());
 			for(List<Object> row : rows){
-				processRow(row);	
+				output.add(processRow(row, exchange));
 			}
 		}
+		else {
+			output = new ArrayList<List<Object>>(1);
+			List<Object> row = (List<Object>)msgContent;
+			output.add(processRow(row, exchange));
+		}
+		exchange.getIn().setBody(output);
 	}
 	
-	private void processRow(List<Object> row) throws Exception {
-		for(int i=0; i<Math.max(row.size(), this.getFileFormat().getColumns().size()); i++){
-			Object data = row.get(i);
-			if(data instanceof String){
-				String dataValue = (String)data;
-				ColumnFormat<?> columnFormat = fileFormat.getColumns().get(i);
-				Object typedData = columnFormat.fromString(dataValue);
-				row.set(i, typedData);
+	private List<Object> processRow(List<Object> row, Exchange exchange) throws Exception {
+		List<Object> result = new ArrayList<Object>(this.getFileFormat().getColumns().size());
+		int rowIndex = 0;
+		for(int i=0; i<this.getFileFormat().getColumns().size(); i++){
+			ColumnFormat<?> columnFormat = this.getFileFormat().getColumns().get(i);
+			String headerName = columnFormat.getMessageHeaderName();
+			Object inputData = null;
+			Object outputData = null;
+			// column content from message
+			if(headerName == null){
+				inputData = row.get(rowIndex);
+				rowIndex++;
 			}
+			// column content from header
 			else {
-				// do nothing
+				inputData = exchange.getIn().getHeader(headerName);
 			}
+			outputData = typeObject(inputData, columnFormat);
+			result.add(outputData);
 		}
+		return result;
+	}
+	
+	private Object typeObject(Object input, ColumnFormat<?> format) throws Exception {
+		if(input instanceof String){
+			String dataValue = (String)input;
+			return format.fromString(dataValue);
+		}
+		return input;
 	}
 
 	public FileFormat getFileFormat() {

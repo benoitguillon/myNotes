@@ -23,7 +23,9 @@
 		<property name="databaseSchemaLoaderFactory" ref="databaseSchemaLoaderFactory"/>
 	</bean>
 	
-	<bean id="databaseSchemaLoaderFactory" class="org.bgi.file2db.database.OracleDatabaseSchemaLoaderFactory"/>
+	<bean id="databaseSchemaLoaderFactory" class="org.bgi.file2db.database.OracleDatabaseSchemaLoaderFactory">
+		<property name="dropExistingDatabaseObject" value="true"/>
+	</bean>
 	
 	<!-- Returns Camel a route builder for a file format -->
 	<bean id="routeBuilderFactory" class="org.bgi.file2db.camel.DefaultFileFormatRouteBuilderFactory">

@@ -28,18 +28,22 @@ public class FileFormatRouteBuilder extends RouteBuilder {
 
 	@Override
 	public void configure() throws Exception {
-		from(getFileEndpointUri())
-		.process(createAssignJobIdProcessor())
+		from(getFileEndpointUri()).id("fileEndpoint").routeId(this.createRouteId())
+		.process(createAssignJobIdProcessor()).id("assignJobId")
 		.doTry()
 			.split(body().tokenize(format.getLineSeparator())).streaming()
-				.unmarshal(format.toCamelDataFormat())
-				.process(this.messageNormalizer)
-				.to(getSqlEndPointUri())
+				.unmarshal(format.toCamelDataFormat()).id("unmarshall")
+				.process(this.messageNormalizer).id("normalize")
+				.to(getSqlEndPointUri()).id("sqlEndpoint")
 		.endDoTry()
 		.doCatch(Exception.class)
 			.to(getErrorFileEndpointUri())
 		.end();
 			
+	}
+	
+	protected String createRouteId(){
+		return this.format.getName();
 	}
 	
 	protected Processor createAssignJobIdProcessor(){
