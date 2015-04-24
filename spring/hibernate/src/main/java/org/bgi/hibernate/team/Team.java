@@ -1,5 +1,6 @@
 package org.bgi.hibernate.team;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import org.bgi.hibernate.common.Country;
+import org.bgi.hibernate.common.Person;
 
 @Entity
 public class Team {
@@ -29,7 +31,7 @@ public class Team {
 	private Country country;
 	
 	@OneToMany(mappedBy="team")
-	private Set<BoardMembership> boardMembers;
+	private Set<BoardMembership> boardMembers = new HashSet<BoardMembership>();
 	
 	public Long getId() {
 		return id;
@@ -69,5 +71,14 @@ public class Team {
 
 	public void setBoardMembers(Set<BoardMembership> boardMembers) {
 		this.boardMembers = boardMembers;
+	}
+	
+	public BoardMembership addBoardMember(final Person p, final BoardRole role){
+		BoardMembership membership = new BoardMembership();
+		membership.setRole(role);
+		membership.setPerson(p);
+		membership.setTeam(this);
+		this.boardMembers.add(membership);
+		return membership;
 	}
 }

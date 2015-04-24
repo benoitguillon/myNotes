@@ -14,7 +14,7 @@
 	
 	<!-- Defines an empty Camel Context. It will be filled by the fileFormatRegistry bean -->
 
-	<c:camelContext id="mainCamelContext" trace="false">
+	<c:camelContext id="mainCamelContext" trace="true">
 	</c:camelContext>
 	
 	<!-- The registry, file formats will register in it -->

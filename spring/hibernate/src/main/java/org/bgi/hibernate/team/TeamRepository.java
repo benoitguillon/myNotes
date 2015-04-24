@@ -2,9 +2,9 @@ package org.bgi.hibernate.team;
 
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@Repository
+@RepositoryRestResource(path="teams")
 public interface TeamRepository extends CrudRepository<Team, Long> {
 
 }

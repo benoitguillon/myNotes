@@ -49,9 +49,9 @@
     	<version>${camel.version}</version>
 	</dependency>
 	<dependency>
-    	<groupId>org.apache.camel</groupId>
-    	<artifactId>camel-sql</artifactId>
-    	<version>${camel.version}</version>
+		<groupId>org.apache.camel</groupId>
+		<artifactId>camel-flatpack</artifactId>
+		<version>${camel.version}</version>
 	</dependency>
 	
 	

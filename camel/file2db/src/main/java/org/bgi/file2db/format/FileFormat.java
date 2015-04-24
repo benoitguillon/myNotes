@@ -30,7 +30,7 @@ public abstract class FileFormat implements InitializingBean {
 	
 	private String targetTableName;
 	
-	public abstract DataFormat toCamelDataFormat();
+	public abstract DataFormat toCamelDataFormat() throws Exception;
 	
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(this.name, "name property not set");

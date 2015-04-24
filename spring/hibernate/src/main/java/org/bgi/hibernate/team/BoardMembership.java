@@ -1,6 +1,8 @@
 package org.bgi.hibernate.team;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -15,6 +17,7 @@ public class BoardMembership {
 	@ManyToOne
 	private Person person;
 	
+	@Enumerated(EnumType.ORDINAL)
 	private BoardRole role;
 
 	@ManyToOne

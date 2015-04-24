@@ -37,6 +37,7 @@ public class FileFormatRouteBuilder extends RouteBuilder {
 				.to(getSqlEndPointUri()).id("sqlEndpoint")
 		.endDoTry()
 		.doCatch(Exception.class)
+			.to("log:errors?showCaughtException=true&showStackTrace=true")
 			.to(getErrorFileEndpointUri())
 		.end();
 			

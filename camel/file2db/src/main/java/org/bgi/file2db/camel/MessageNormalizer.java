@@ -40,7 +40,7 @@ public class MessageNormalizer implements Processor {
 		exchange.getIn().setBody(output);
 	}
 	
-	private List<Object> processRow(List<Object> row, Exchange exchange) throws Exception {
+	protected List<Object> processRow(List<Object> row, Exchange exchange) throws Exception {
 		List<Object> result = new ArrayList<Object>(this.getFileFormat().getColumns().size());
 		int rowIndex = 0;
 		for(int i=0; i<this.getFileFormat().getColumns().size(); i++){
@@ -63,7 +63,7 @@ public class MessageNormalizer implements Processor {
 		return result;
 	}
 	
-	private Object typeObject(Object input, ColumnFormat<?> format) throws Exception {
+	protected Object typeObject(Object input, ColumnFormat<?> format) throws Exception {
 		if(input instanceof String){
 			String dataValue = (String)input;
 			return format.fromString(dataValue);
