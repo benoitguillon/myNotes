@@ -17,6 +17,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
     </jaxrs:serviceBeans>
     <jaxrs:providers>
     	<bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider"/>
+    	<bean class="org.bgi.cxf.jaxrs.RuntimeExceptionMapper"/>
     </jaxrs:providers>
   </jaxrs:server>
  

@@ -1,14 +1,19 @@
 package org.bgi.cxf.jaxrs;
 
-import com.sun.xml.txw2.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlElement("customer")
+
+@XmlRootElement(name="customer")
 public class Customer {
 	
+    @XmlElement(name="internal_id")
 	private long id;
 	
+    @XmlElement(name="real_name")
 	private String name;
 	
+    @XmlElement(name="mail", required=true)
 	private String email;
 
 	public long getId() {
