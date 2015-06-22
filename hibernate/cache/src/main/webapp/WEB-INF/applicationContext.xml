@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<jaxrs:server id="jaxrsServices">
+		<jaxrs:serviceBeans>
+			<ref bean="contactService" />
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:server>
+
+	<bean id="datasource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://cache_db_1:3306/cachetest" />
+		<property name="username" value="cachetest" />
+		<property name="password" value="cachetest" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="datasource" />
+		<property name="mappingResources">
+			<list>
+				<value>contact.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.generate_statistics">true</prop>
+				<prop key="hibernate.jmx.enabled">true</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="contactService" class="org.bgi.hibernate.cache.ContactService">
+		<property name="contactDao" ref="contactDao" />
+	</bean>
+
+	<bean id="contactDao" class="org.bgi.hibernate.cache.ContactDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	
+	
+	<bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter">
+		<property name="beans">
+			<map>
+				<entry key="Hibernate:application=Statistics" value-ref="hibernateStatisticsBean" />
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="hibernateStatisticsBean" class="org.bgi.hibernate.HibernateStatisticsFactoryBean">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+
+</beans>

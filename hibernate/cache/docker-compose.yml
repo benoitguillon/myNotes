@@ -1,0 +1,31 @@
+db:
+    image: "mysql"
+    ports:
+        - "13306:3306"
+    environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=cachetest
+        - MYSQL_USER=cachetest
+        - MYSQL_PASSWORD=cachetest
+hibcachedemo:
+    image: "hibcachedemo"
+    ports:
+        - "8080"
+    links:
+        - "db"
+        - "jms"
+loadbalancer:
+    image: tutum/haproxy
+    ports:
+        - "1936:1936"
+        - "8888:80"
+    links:
+        - "hibcachedemo"
+    environment:
+        - BACKEND_PORT=8080
+        - BALANCE=roundrobin
+jms:
+    image: riskfocus/activemq-docker
+    ports:
+        - "61616"
+        - "8161:8161"

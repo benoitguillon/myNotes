@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<ehcache 
+    updateCheck="true"
+    monitoring="autodetect"
+    dynamicConfig="true">
+    
+    <diskStore path="/tmp/ehcache" />
+    
+    <defaultCache 
+    	maxEntriesLocalHeap="10000" 
+    	eternal="false"
+        timeToIdleSeconds="120" 
+        timeToLiveSeconds="120" 
+        diskSpoolBufferSizeMB="30"
+        maxEntriesLocalDisk="10000000" 
+        diskExpiryThreadIntervalSeconds="120"
+        memoryStoreEvictionPolicy="LRU" 
+        statistics="true">
+        <persistence strategy="localTempSwap" />
+        <cacheEventListenerFactory
+     		class="net.sf.ehcache.distribution.jms.JMSCacheReplicatorFactory"
+     		properties="replicateAsynchronously=false,
+            	      	replicatePuts=true,
+                	  	replicateUpdates=true,
+                  		replicateUpdatesViaCopy=true,
+                  		replicateRemovals=true,
+                  		asynchronousReplicationIntervalMillis=1000"
+      		propertySeparator=","/>
+    </defaultCache> 
+    
+    <!-- JMS replication -->
+    <cacheManagerPeerProviderFactory
+    	class="net.sf.ehcache.distribution.jms.JMSCacheManagerPeerProviderFactory"
+    	properties="initialContextFactoryName=org.bgi.hibernate.CustomActiveMQInitialContextFactory,
+           			providerURL=tcp://jms:61616,
+           			replicationTopicConnectionFactoryBindingName=connection.TopicConnectionFactory,
+           			replicationTopicBindingName=ehcacheTopic,
+           			getQueueConnectionFactoryBindingName=connection.QueueConnectionFactory,
+           			getQueueBindingName=ehcacheQueue"
+           			
+       propertySeparator=","/>
+       
+</ehcache>
