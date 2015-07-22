@@ -12,19 +12,26 @@
 // ============================================================================
 package org.bgi.hibernate.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
 
 @Path("/contacts")
@@ -44,6 +51,21 @@ public class ContactService {
         	return Response.status(Status.NOT_FOUND).build();
         }
         return Response.ok(result).build();
+    }
+    
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response list(@QueryParam("text") String text) throws Exception {
+    	LOG.info("");
+    	List<Contact> result = new ArrayList<Contact>();
+    	if(!StringUtils.isEmpty(text)){
+    		result = contactDao.findFullText(text);
+    	}
+    	else {
+    		result = contactDao.findAll();
+    	}
+    	return Response.ok(new GenericEntity<List<Contact>>(result){}).build();
     }
     
     @POST
@@ -73,6 +95,26 @@ public class ContactService {
     	current.setLastName(c.getLastName());
     	current.setZipCode(c.getZipCode());
     	contactDao.update(current);
+    	return Response.ok().build();
+    }
+    
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") long id) throws Exception {
+    	LOG.info(String.format("Deleting contact with id %d", id));
+    	Contact current = contactDao.getById(id);
+    	if(current == null){
+    		return Response.status(Status.NOT_FOUND).build();
+    	}
+    	contactDao.delete(current);
+    	return Response.ok().build();
+    }
+    
+    @DELETE
+    @Path("/")
+    public Response deleteAll() throws Exception {
+    	LOG.info("Deleting all contacts");
+    	contactDao.deleteAll();
     	return Response.ok().build();
     }
     

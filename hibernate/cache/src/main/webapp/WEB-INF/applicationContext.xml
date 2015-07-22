@@ -13,6 +13,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
 	<jaxrs:server id="jaxrsServices">
 		<jaxrs:serviceBeans>
 			<ref bean="contactService" />
+			<ref bean="adminService"/>
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider" />
@@ -22,7 +23,7 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
 	<bean id="datasource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://cache_db_1:3306/cachetest" />
+		<property name="url" value="${db.url}" />
 		<property name="username" value="cachetest" />
 		<property name="password" value="cachetest" />
 	</bean>
@@ -40,9 +41,13 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 				<prop key="hibernate.generate_statistics">true</prop>
-				<prop key="hibernate.jmx.enabled">true</prop>
+				<!-- 2nd level cache configuration -->
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+				<!-- Hibernate Search configuration  -->
+				<prop key="hibernate.search.worker.scope">org.bgi.hibernate.search.JmsWorker</prop>
+				<prop key="hibernate.search.default.directory_provider">filesystem</prop>
+				<prop key="hibernate.search.default.indexBase">/tmp/cache/index</prop>
 			</props>
 		</property>
 	</bean>
@@ -55,18 +60,22 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
-	
-	
-	<bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter">
-		<property name="beans">
-			<map>
-				<entry key="Hibernate:application=Statistics" value-ref="hibernateStatisticsBean" />
-			</map>
-		</property>
+	<bean id="adminService" class="org.bgi.hibernate.cache.AdminService">
+		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
-	<bean id="hibernateStatisticsBean" class="org.bgi.hibernate.HibernateStatisticsFactoryBean">
-		<property name="sessionFactory" ref="sessionFactory"/>
-	</bean>
+	
+	
+<!-- 	<bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter"> -->
+<!-- 		<property name="beans"> -->
+<!-- 			<map> -->
+<!-- 				<entry key="Hibernate:application=Statistics" value-ref="hibernateStatisticsBean" /> -->
+<!-- 			</map> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+	
+<!-- 	<bean id="hibernateStatisticsBean" class="org.bgi.hibernate.HibernateStatisticsFactoryBean"> -->
+<!-- 		<property name="sessionFactory" ref="sessionFactory"/> -->
+<!-- 	</bean> -->
 
 </beans>

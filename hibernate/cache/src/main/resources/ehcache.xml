@@ -32,7 +32,7 @@
     <cacheManagerPeerProviderFactory
     	class="net.sf.ehcache.distribution.jms.JMSCacheManagerPeerProviderFactory"
     	properties="initialContextFactoryName=org.bgi.hibernate.CustomActiveMQInitialContextFactory,
-           			providerURL=tcp://jms:61616,
+           			providerURL=${jms.url},
            			replicationTopicConnectionFactoryBindingName=connection.TopicConnectionFactory,
            			replicationTopicBindingName=ehcacheTopic,
            			getQueueConnectionFactoryBindingName=connection.QueueConnectionFactory,

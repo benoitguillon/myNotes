@@ -12,21 +12,33 @@
 // ============================================================================
 package org.bgi.hibernate.cache;
 
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
+@Indexed
 public class Contact {
     
+	@DocumentId
     private long id;
     
+    @Field(index=Index.YES, analyze=Analyze.YES)
     private String firstName;
     
+    @Field(index=Index.YES, analyze=Analyze.YES)
     private String lastName;
     
+    @Field(index=Index.YES, analyze=Analyze.YES)
     private String address;
     
+    @Field(index=Index.YES, analyze=Analyze.YES)
     private String city;
     
     private String zipCode;
     
+    @Field(index=Index.YES, analyze=Analyze.YES)
     private String country;
 
     

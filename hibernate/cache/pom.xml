@@ -10,6 +10,12 @@
 
 	<build>
 		<finalName>cache</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -20,7 +26,22 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-war-plugin</artifactId>
+        		<version>2.6</version>
+        		<configuration>
+          			<webResources>
+        				<resource>
+           					<directory>${basedir}/src/main/webapp/WEB-INF</directory>
+           					<filtering>true</filtering>
+           					<targetPath>WEB-INF</targetPath>
+        				</resource>
+      				</webResources>
+          		</configuration>
+          	</plugin>
 		</plugins>
+		
 	</build>
 
 	<dependencies>
@@ -57,6 +78,11 @@
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 		
 		<!-- HIBERNATE -->
 		<dependency>
@@ -75,6 +101,7 @@
             	</exclusion>
         	</exclusions>
 		</dependency>
+		
 		<!-- update ehcache version provided by hibernate -->
 		<dependency>
   			<groupId>net.sf.ehcache</groupId>
@@ -86,6 +113,12 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search-orm</artifactId>
+			<version>5.0.1.Final</version>
+		</dependency>
+		
 		
 		<!-- DATABASE CONNECTION -->
 		<dependency>
@@ -113,9 +146,17 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-client</artifactId>
+			<artifactId>activemq-all</artifactId>
 			<version>5.11.1</version>
 		</dependency>
+		
+		<!-- Apache Solrj -->
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			<version>5.2.1</version>
+		</dependency>
+		
 		
 
 		<!-- TESTS -->
@@ -133,6 +174,18 @@
 		<spring.version>4.1.4.RELEASE</spring.version>
 		<jackson.version>1.9.13</jackson.version>
 		<hibernate.version>4.3.8.Final</hibernate.version>
+		<jms.url>vm://locahost</jms.url>
+		<db.url>jdbc:mysql://localhost:13306/cachetest</db.url>
 	</properties>
+	
+	<profiles>
+		<profile>
+			<id>cluster</id>
+			<properties>
+				<jms.url>tcp://jms:61616</jms.url>
+				<db.url>jdbc:mysql://cache_db_1:3306/cachetest</db.url>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
